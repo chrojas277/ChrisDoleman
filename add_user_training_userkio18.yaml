@@ -1,0 +1,48 @@
+---
+#------------------------------- HOW TO USE
+# Este playbook está diseñado para enviar crear un usuario de Windows recibiendo como variables
+# el nombre de usuario y el password del acceso a crear
+#
+#------------------------------- REQUERIMIENTOS
+# N/A
+#
+#------------------------------- ENTRADAS
+# Variables:
+# - user  -> Nombre de la cuenta de Windows a crear
+# - pass  -> Password de de la cuenta a crear
+#
+ 
+#------------------------------- MAIN
+ 
+#Nombre del Playbook
+- name: Add a user
+ 
+#Sobre qué hosts del inventario se va ejecutar
+  hosts: all
+ 
+#Obtener detalle de los servidores (SO, Versión de SO, Hora del Sistema, etc.)
+  gather_facts: false
+ 
+#Lista de tareas a realizar en el playbook
+  tasks:
+ 
+  #Nombre de la tarea
+    - name: Add User
+    #Módulo de ansible que ejecutará la tarea
+      win_user:
+      #Variables o configuraciones del módulo
+        name: "{{ user }}"
+        password: "{{ pass }}"
+        state: present
+        groups:
+          - Administrators
+ 
+    #Importando Tarea de listar usuarios
+    - name: Listando usuarios
+      include_tasks: plays/listWinUsers.yml
+ 
+    #Importando Modulo Helix
+    - name: Creando WO
+      include_tasks: plays/ABC_HelixWO.yml
+ 
+ 
